@@ -1,6 +1,6 @@
 # Parliamentary Travel
 
-This repository tries to explain my process in analyzing the travel data of Burgesses and Knights of the Shire to Parliaments in the late Medieval period, as part of the [Travelers Lab](travelerslab.research.wesleyan.edu) at Wesleyan University.
+This repository tries to explain my process in analyzing the travel data of Burgesses and Knights of the Shire to Parliaments in the late Medieval period, as part of the [Travelers Lab](http://travelerslab.research.wesleyan.edu) at Wesleyan University.
 
 ## Goals of the Project
 
