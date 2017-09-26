@@ -25,17 +25,17 @@ pbll$name <- pBoroughs$nameUK
 pBoroughs$long <- pbll$lon
 pBoroughs$lat  <- pbll$lat
 
-#drops nameUK column
+#drops nameUK column and parliamentary borough column
 pBoroughs$nameUK <- NULL
-
-# Saves data to disk (as parliamentary_boroughs_long_lat.csv)
+pBoroughs$parliamentary <- NULL
+# Saves data to disk (as parliamentary_boroughs_long_lat.csv, and in .RData)
 write_csv(pBoroughs, "./data/parliamentary_boroughs.csv")
+save(pBoroughs, file="./data/parlia_boroughs.RData")
 
 
 # Individual Code if you run into rate limit problems
 
 # pBoroughs <- mutate(pBoroughsLongLat, 
-#                     lon = ifelse(is.na(lon),
 #                                   geocode(name)[1],
 #                                   lon)) -> ASK QUESTION ABOUT THIS TO KABACOFF / PAVEL
 
