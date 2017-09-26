@@ -29,7 +29,8 @@ pBoroughs$lat  <- pbll$lat
 pBoroughs$nameUK <- NULL
 
 # Saves data to disk (as parliamentary_boroughs_long_lat.csv)
-write_csv(pBoroughs, "./data/parliamentary_boroughs_long_lat.csv")
+write_csv(pBoroughs, "./data/parliamentary_boroughs.csv")
+
 
 # Individual Code if you run into rate limit problems
 
