@@ -22,7 +22,7 @@ In this file, I clean the data given to me on the Parliamentary Boroughs from wh
 
 Right now, this just has me doing basic mapping using `ggmap`; this will be filled in more later, as I do more research on exactly how to map things using both `ggmap` and `ggplot`, as well as when I have more input regarding road structures.
 
-[[https://github.com/lacoperon/ParliamentaryTravel/blob/master/figures/burgessplot.png|alt=britainmap]]
+[[https://github.com/lacoperon/ParliamentaryTravel/blob/master/figures/burgessplot.png]]
 
 ---
 
