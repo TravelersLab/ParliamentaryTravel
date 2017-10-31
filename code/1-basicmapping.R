@@ -31,7 +31,7 @@ qmplot(long, lat, pBoroughs, maptype="toner-background", data = pBoroughs, color
        zoom = 7, color = TRUE)+ 
   geom_abline(slope = lineDF$m, intercept = lineDF$b, color = "green", size = 0.2) +
   geom_segment(x = plong, y = plat,
-             xend = pBoroughs$x, yend= pBoroughs$y,
+             xend = pBoroughs$long, yend= pBoroughs$lat,
              color = "pink", size = 1) +
   geom_point(aes(x=plong, y=plat), color = "blue", size = 3) 
 
