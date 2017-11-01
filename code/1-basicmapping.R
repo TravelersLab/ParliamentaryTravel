@@ -67,32 +67,50 @@ t_step <- seq(0, t_f, t_f / (num_steps - 1))
 # tf: Final Time (aka longest distance needed to travel)
 # ts: Start Time (IE when the group should leave to get to London at Parl Time)
 # t : Current Time (IE some t in t_step)
-# pos_s: Starting pos(IE long  of Borough)
-# ppos  : Pos in Dim (IE long/lat) of Westminster
+# long_s, lat_s: Starting pos(IE long/lat  of Borough)
+# plong, plat  : Pos in Dim (IE long/lat of Westminster)
 
 # Outputs:
 # loc, an object with $long as the current longitude, $lat as current latitude
 calculateLongLat <- function(tf, ts, t, long_s, lat_s, plong, plat) {
-  if(t < ts) {
-    c_long <- long_s
-    c_lat  <- lat_s
-    return( list("t_long" = c_long, "t_lat" = c_lat))
-  }
-  
+  logic_vector <- ts <= t
+  int_vector <- as.numeric(logic_vector)
+  c_int_vector <- 1 - int_vector
   scale <- (tf - t) / (tf - ts)
-  c_long <- scale * long_s + (1 - scale) * plong
-  c_lat  <- scale * lat_s  + (1 - scale) * plat
-  return( list("t_long" = c_long, "t_lat" = c_lat))
+  
+  long_if_set_out <- scale * long_s + (1-scale) * plong
+  lat_if_set_out  <- scale * lat_s  + (1-scale) * plat
+  
+  c_long <- int_vector * long_if_set_out + c_int_vector * long_s
+  c_lat  <- int_vector * lat_if_set_out  + c_int_vector * lat_s
+  return(list("c_long" = c_long, "c_lat" = c_lat))
 }
 
 # Passes sanity checks so far
 ex1 <- calculateLongLat(10, 0, 7, 10, 10, 0, 0)
-ex2 <- calculateLongLat(10, 0, 5, 10, 10, 0, 0) 
+ex2 <- calculateLongLat(10, 0, 5, 10, 10, 0, 0)
 
-library(foreach)
+# Vector to track location over time
+time_locs <- c()
 
-calculateLongLat(t_f, pBoroughs$start_t, t_step[1], pBoroughs$long, pBoroughs$lat)
+# Foor loop, to calculate the locations over time
+for(i in 1:num_steps) {
+  time_locs[[i]] <-calculateLongLat(t_f, pBoroughs$start_t, t_step[i], pBoroughs$long, pBoroughs$lat, plong, plat)
+}
 
+# Plots the locations @ given time step i (where 1 <= i < num_steps)
+pot <- function(i) {
+  cl <- time_locs[[i]]
+  qmplot(long, lat, pBoroughs, maptype="toner-background", data = pBoroughs, color = I("red"),
+         zoom = 7, color = TRUE) + geom_point(aes(x=cl$c_long, y=cl$c_lat), color = "purple", shape=17, size = 4)
+}
 
+# Saves plot to file over time
+for(i in 1:num_steps) {
+  ggsave(sprintf("burgess_travel%03d.jpg", i), pot(i), 
+         device="jpg", path="./figures/travel_over_time/")
+}
 
-
+# And then, to produce the GIF, 
+# we run `convert -delay 10 -loop 1 *jpg burgess_travel.gif`
+# (This produces our GIF using ImageMagick on the command line)
