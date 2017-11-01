@@ -20,20 +20,12 @@ dev.off()
 qmplot(long, lat, pBoroughs, maptype="toner-background", data = pBoroughs, color = I("red"),
        zoom = 7, color = TRUE) + geom_point(aes(x=plong, y=plat), color = "blue", size = 3)
 
-# Creates lines for the various paths of the groups
-lineDF <- select(pBoroughs, Name, long, lat)
-lineDF <- mutate(lineDF, 
-                 m = ((lat - plat) / (long - plong)),
-                 b = lat - m * long
-                 )
-
 # Graph that makes easy to see that the lines correspond to the actual paths
 qmplot(long, lat, pBoroughs, maptype="toner-background", data = pBoroughs, color = I("red"),
-       zoom = 7, color = TRUE)+ 
-  geom_abline(slope = lineDF$m, intercept = lineDF$b, color = "green", size = 0.2) +
+       zoom = 7, color = TRUE) + 
   geom_segment(x = plong, y = plat,
-             xend = pBoroughs$long, yend= pBoroughs$lat,
-             color = "pink", size = 1) +
+               xend = pBoroughs$long, yend= pBoroughs$lat,
+               color = "pink", size = 1) +
   geom_point(aes(x=plong, y=plat), color = "blue", size = 3) 
 
 ggsave("./figures/burgessplot_withpaths.png")
@@ -45,7 +37,7 @@ ggsave("./figures/burgessplot_withpaths.png")
 pBoroughs <- mutate(pBoroughs, 
                     distance = sqrt( (plong - long)^2 + (plat - lat)^2),
                     start_t = max(pBoroughs$distance) - distance
-                    )
+)
 
 # Sets 'final time' to be the distance of the farthest party 
 # (IE they'll be the ones travelling the longest)
@@ -102,7 +94,9 @@ for(i in 1:num_steps) {
 pot <- function(i) {
   cl <- time_locs[[i]]
   qmplot(long, lat, pBoroughs, maptype="toner-background", data = pBoroughs, color = I("red"),
-         zoom = 7, color = TRUE) + geom_point(aes(x=cl$c_long, y=cl$c_lat), color = "purple", shape=17, size = 4)
+         zoom = 7, color = TRUE)+
+    geom_point(aes(x=cl$c_long, y=cl$c_lat), color = "purple", shape=17, size = 4)+
+    geom_point(aes(x=plong, y=plat), color = "blue", size = 3)
 }
 
 # Saves plot to file over time
@@ -112,5 +106,5 @@ for(i in 1:num_steps) {
 }
 
 # And then, to produce the GIF, 
-# we run `convert -delay 10 -loop 1 *jpg burgess_travel.gif`
+# we run `convert -delay 10 -loop 1 *jpg ../burgess_travel.gif`
 # (This produces our GIF using ImageMagick on the command line)
