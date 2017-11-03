@@ -3,6 +3,8 @@ library(mapdata)
 library(ggmap)
 library(dplyr)
 
+setwd("~/MEGA/TravelersLab/Parliamentary\ Travel")
+
 # maps english boroughs
 qmplot(long, lat, pBoroughs, maptype="toner-background", data = pBoroughs, color = I("red"),
        zoom = 7, color = TRUE)
@@ -34,6 +36,12 @@ ggsave("./figures/burgessplot_withpaths.png")
 # In doing so, it provides us a measure to figure out who leaves first,
 # as assuming uniform travel / time (false in individual cases, true as n -> inf)
 # the group which leaves first should be the group that's the farthest away
+
+# ASSUMPTION MADE HERE THAT DOESN'T HOLD TRUE -- England is flat, and degrees
+# of latitude are constant in distance, and equivalent to degrees of longitude
+
+# TO FIX : Using haversine formula
+
 pBoroughs <- mutate(pBoroughs, 
                     distance = sqrt( (plong - long)^2 + (plat - lat)^2),
                     start_t = max(pBoroughs$distance) - distance
@@ -104,6 +112,85 @@ for(i in 1:num_steps) {
   ggsave(sprintf("burgess_travel%03d.jpg", i), pot(i), 
          device="jpg", path="./figures/travel_over_time/")
 }
+
+library(igraph)
+
+g<- make_undirected_graph(c(), n=length(pBoroughs$Name))
+V(g)$name <- pBoroughs$Name
+for(i in 1:num_steps) {
+  thresh <- 0.01
+  cd <- time_locs[[i]]
+  for(j in 1:length(cd$c_long)) {
+    long_j <- time_locs[[i]]$c_long[j]
+    lat_j  <- time_locs[[i]]$c_lat[j]
+    for(k in j:length(cd$c_long)){
+      long_k <- time_locs[[i]]$c_long[k]
+      lat_k  <- time_locs[[i]]$c_lat[k]
+      distance <- sqrt( (long_j - long_k)^2 + (lat_j - lat_k)^2)
+      if (distance < thresh ) {
+        if(are.connected(g, j, k)) {
+          e_id <- get.edge.ids(g, c(j, k))
+          c_w <- get.edge.attribute(g, "w", index=e_id)
+          g <- set_edge_attr(g, "w", index=e_id, value=c_w + 1)
+        } else {
+          if (j != k ) {
+            g <- add_edges(g, c(j,k), "w" = 1)
+            print(paste(as.character(j), as.character(k)))
+          }
+        }
+      }
+    }
+  }
+}
+plot(g)
+
+g <- delete.edges(g, E(g)[w < 5])
+
+library(ggplot2)
+qplot(E(g)$w)
+
+library(d3Network)
+
+df_nodes <- as_data_frame(g, "vertices")
+
+df_links <- as_data_frame(g, "edges")
+df_links <- mutate(df_links, w =  3*w)
+
+
+df_links <- mutate(df_links, 
+                   from_index = match(from, df_nodes$name)-1,
+                   to_index   = match(to  , df_nodes$name)-1)
+
+
+df_nodes$group <- components(g)$membership
+
+
+d3rep <- d3ForceNetwork(Links = df_links,
+               Nodes = df_nodes,
+               Source="from_index",
+               Target="to_index",
+               Value="w",
+               NodeID="name",
+               file="d3rep.html",
+               linkWidth = 1,
+               linkDistance = "function(d){return d.value }",
+               charge = -100,
+               fontsize = 15,
+               Group = "group"
+               )
+
+
+
+pBoroughs$group <- df_nodes$group
+g_colors <- as.color(pBoroughs$group)
+
+
+gbplot <- qmplot(long, lat, pBoroughs, maptype="toner-background", data = pBoroughs, color = g_colors,
+       zoom = 7, color = TRUE, legend="none") + geom_point(aes(x=plong, y=plat), color = I("blue"), size = 3)+
+  theme(legend.position="none")
+
+ggsave("./figures/groups_burgesses.png", gbplot, device="png")
+
 
 # And then, to produce the GIF, 
 # we run `convert -delay 10 -loop 1 *jpg ../burgess_travel.gif`
