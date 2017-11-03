@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body> 
+ <style>
+.link {
+stroke: #666;
+opacity: 0.6;
+stroke-width: 1.5px;
+}
+.node circle {
+stroke: #fff;
+opacity: 0.6;
+stroke-width: 1.5px;
+}
+.node:not(:hover) .nodetext {
+display: none;
+}
+text {
+font: 15px serif;
+opacity: 0.6;
+pointer-events: none;
+}
+</style>
+
+<script src=http://d3js.org/d3.v3.min.js></script>
+
+<script> 
+ var links = [ { "source" : 54, "target" : 88, "value" : 300 }, { "source" : 46, "target" : 48, "value" : 249 }, { "source" : 48, "target" : 80, "value" : 144 }, { "source" : 34, "target" : 50, "value" : 141 }, { "source" : 46, "target" : 80, "value" : 135 }, { "source" : 46, "target" : 74, "value" : 120 }, { "source" : 48, "target" : 74, "value" : 120 }, { "source" : 74, "target" : 80, "value" : 120 }, { "source" : 10, "target" : 65, "value" : 117 }, { "source" : 11, "target" : 16, "value" : 114 }, { "source" : 46, "target" : 89, "value" : 102 }, { "source" : 48, "target" : 89, "value" : 102 }, { "source" : 74, "target" : 89, "value" : 102 }, { "source" : 46, "target" : 63, "value" : 99 }, { "source" : 48, "target" : 63, "value" : 99 }, { "source" : 63, "target" : 74, "value" : 99 }, { "source" : 63, "target" : 89, "value" : 99 }, { "source" : 63, "target" : 80, "value" : 93 }, { "source" : 80, "target" : 89, "value" : 93 }, { "source" : 3, "target" : 53, "value" : 90 }, { "source" : 9, "target" : 29, "value" : 87 }, { "source" : 49, "target" : 79, "value" : 87 }, { "source" : 21, "target" : 28, "value" : 84 }, { "source" : 25, "target" : 39, "value" : 78 }, { "source" : 71, "target" : 83, "value" : 78 }, { "source" : 8, "target" : 75, "value" : 75 }, { "source" : 10, "target" : 82, "value" : 75 }, { "source" : 19, "target" : 22, "value" : 75 }, { "source" : 54, "target" : 91, "value" : 72 }, { "source" : 63, "target" : 83, "value" : 72 }, { "source" : 83, "target" : 89, "value" : 72 }, { "source" : 88, "target" : 91, "value" : 72 }, { "source" : 2, "target" : 87, "value" : 69 }, { "source" : 35, "target" : 64, "value" : 66 }, { "source" : 50, "target" : 65, "value" : 60 }, { "source" : 46, "target" : 83, "value" : 57 }, { "source" : 48, "target" : 83, "value" : 57 }, { "source" : 24, "target" : 82, "value" : 54 }, { "source" : 74, "target" : 83, "value" : 51 }, { "source" : 3, "target" : 67, "value" : 48 }, { "source" : 6, "target" : 80, "value" : 48 }, { "source" : 34, "target" : 71, "value" : 48 }, { "source" : 53, "target" : 67, "value" : 48 }, { "source" : 12, "target" : 16, "value" : 45 }, { "source" : 65, "target" : 82, "value" : 45 }, { "source" : 9, "target" : 87, "value" : 42 }, { "source" : 11, "target" : 12, "value" : 42 }, { "source" : 34, "target" : 65, "value" : 42 }, { "source" : 80, "target" : 83, "value" : 42 }, { "source" : 6, "target" : 74, "value" : 39 }, { "source" : 10, "target" : 50, "value" : 39 }, { "source" : 14, "target" : 69, "value" : 39 }, { "source" : 63, "target" : 71, "value" : 39 }, { "source" : 71, "target" : 89, "value" : 39 }, { "source" : 6, "target" : 46, "value" : 36 }, { "source" : 6, "target" : 48, "value" : 36 }, { "source" : 18, "target" : 84, "value" : 36 }, { "source" : 50, "target" : 71, "value" : 36 }, { "source" : 6, "target" : 63, "value" : 33 }, { "source" : 6, "target" : 89, "value" : 33 }, { "source" : 10, "target" : 24, "value" : 33 }, { "source" : 10, "target" : 34, "value" : 33 }, { "source" : 12, "target" : 53, "value" : 33 }, { "source" : 46, "target" : 71, "value" : 33 }, { "source" : 48, "target" : 71, "value" : 33 }, { "source" : 71, "target" : 74, "value" : 33 }, { "source" : 6, "target" : 41, "value" : 30 }, { "source" : 19, "target" : 24, "value" : 30 }, { "source" : 29, "target" : 87, "value" : 30 }, { "source" : 34, "target" : 83, "value" : 30 }, { "source" : 2, "target" : 9, "value" : 27 }, { "source" : 12, "target" : 67, "value" : 27 }, { "source" : 50, "target" : 82, "value" : 27 }, { "source" : 50, "target" : 83, "value" : 27 }, { "source" : 69, "target" : 72, "value" : 27 }, { "source" : 71, "target" : 80, "value" : 27 }, { "source" : 2, "target" : 21, "value" : 24 }, { "source" : 2, "target" : 28, "value" : 24 }, { "source" : 3, "target" : 12, "value" : 24 }, { "source" : 3, "target" : 21, "value" : 24 }, { "source" : 3, "target" : 28, "value" : 24 }, { "source" : 6, "target" : 83, "value" : 24 }, { "source" : 24, "target" : 65, "value" : 24 }, { "source" : 29, "target" : 79, "value" : 24 }, { "source" : 34, "target" : 82, "value" : 24 }, { "source" : 65, "target" : 71, "value" : 24 }, { "source" : 85, "target" : 88, "value" : 24 }, { "source" : 2, "target" : 29, "value" : 21 }, { "source" : 10, "target" : 71, "value" : 21 }, { "source" : 14, "target" : 72, "value" : 21 }, { "source" : 16, "target" : 53, "value" : 21 }, { "source" : 19, "target" : 82, "value" : 21 }, { "source" : 20, "target" : 42, "value" : 21 }, { "source" : 21, "target" : 53, "value" : 21 }, { "source" : 21, "target" : 67, "value" : 21 }, { "source" : 22, "target" : 24, "value" : 21 }, { "source" : 22, "target" : 91, "value" : 21 }, { "source" : 28, "target" : 67, "value" : 21 }, { "source" : 29, "target" : 49, "value" : 21 }, { "source" : 34, "target" : 46, "value" : 21 }, { "source" : 34, "target" : 48, "value" : 21 }, { "source" : 34, "target" : 63, "value" : 21 }, { "source" : 34, "target" : 74, "value" : 21 }, { "source" : 34, "target" : 89, "value" : 21 }, { "source" : 54, "target" : 85, "value" : 21 }, { "source" : 0, "target" : 15, "value" : 18 }, { "source" : 3, "target" : 11, "value" : 18 }, { "source" : 3, "target" : 16, "value" : 18 }, { "source" : 6, "target" : 71, "value" : 18 }, { "source" : 9, "target" : 49, "value" : 18 }, { "source" : 9, "target" : 79, "value" : 18 }, { "source" : 11, "target" : 53, "value" : 18 }, { "source" : 11, "target" : 67, "value" : 18 }, { "source" : 15, "target" : 42, "value" : 18 }, { "source" : 16, "target" : 67, "value" : 18 }, { "source" : 18, "target" : 52, "value" : 18 }, { "source" : 19, "target" : 91, "value" : 18 }, { "source" : 21, "target" : 87, "value" : 18 }, { "source" : 22, "target" : 54, "value" : 18 }, { "source" : 22, "target" : 88, "value" : 18 }, { "source" : 24, "target" : 34, "value" : 18 }, { "source" : 24, "target" : 50, "value" : 18 }, { "source" : 28, "target" : 53, "value" : 18 }, { "source" : 28, "target" : 87, "value" : 18 }, { "source" : 34, "target" : 80, "value" : 18 }, { "source" : 37, "target" : 73, "value" : 18 }, { "source" : 41, "target" : 46, "value" : 18 }, { "source" : 41, "target" : 48, "value" : 18 }, { "source" : 41, "target" : 74, "value" : 18 }, { "source" : 41, "target" : 80, "value" : 18 }, { "source" : 46, "target" : 50, "value" : 18 }, { "source" : 48, "target" : 50, "value" : 18 }, { "source" : 50, "target" : 63, "value" : 18 }, { "source" : 50, "target" : 74, "value" : 18 }, { "source" : 50, "target" : 80, "value" : 18 }, { "source" : 50, "target" : 89, "value" : 18 }, { "source" : 56, "target" : 81, "value" : 18 }, { "source" : 58, "target" : 93, "value" : 18 }, { "source" : 65, "target" : 83, "value" : 18 }, { "source" : 70, "target" : 90, "value" : 18 }, { "source" : 85, "target" : 91, "value" : 18 }, { "source" : 0, "target" : 62, "value" : 15 }, { "source" : 6, "target" : 34, "value" : 15 }, { "source" : 7, "target" : 31, "value" : 15 }, { "source" : 10, "target" : 19, "value" : 15 }, { "source" : 10, "target" : 22, "value" : 15 }, { "source" : 10, "target" : 63, "value" : 15 }, { "source" : 10, "target" : 83, "value" : 15 }, { "source" : 10, "target" : 89, "value" : 15 }, { "source" : 17, "target" : 39, "value" : 15 }, { "source" : 19, "target" : 54, "value" : 15 }, { "source" : 19, "target" : 65, "value" : 15 }, { "source" : 19, "target" : 88, "value" : 15 }, { "source" : 22, "target" : 82, "value" : 15 }, { "source" : 27, "target" : 35, "value" : 15 }, { "source" : 41, "target" : 49, "value" : 15 }, { "source" : 41, "target" : 63, "value" : 15 }, { "source" : 41, "target" : 79, "value" : 15 }, { "source" : 41, "target" : 83, "value" : 15 }, { "source" : 41, "target" : 89, "value" : 15 }, { "source" : 46, "target" : 65, "value" : 15 }, { "source" : 48, "target" : 65, "value" : 15 }, { "source" : 59, "target" : 78, "value" : 15 }, { "source" : 63, "target" : 65, "value" : 15 }, { "source" : 65, "target" : 74, "value" : 15 }, { "source" : 65, "target" : 89, "value" : 15 }, { "source" : 71, "target" : 82, "value" : 15 }, { "source" : 76, "target" : 85, "value" : 15 }, { "source" : 79, "target" : 87, "value" : 15 }, { "source" : 82, "target" : 83, "value" : 15 } ] ; 
+ var nodes = [ { "name" : "Appleby", "group" : 1 }, { "name" : "Arundel", "group" : 2 }, { "name" : "Barnstaple", "group" : 3 }, { "name" : "Bath", "group" : 3 }, { "name" : "Bedford", "group" : 4 }, { "name" : "Bletchingley", "group" : 5 }, { "name" : "Bodmin", "group" : 3 }, { "name" : "Boston", "group" : 6 }, { "name" : "Bridgnorth", "group" : 7 }, { "name" : "Bridgwater", "group" : 3 }, { "name" : "Bridport", "group" : 3 }, { "name" : "Bristol", "group" : 3 }, { "name" : "Calne", "group" : 3 }, { "name" : "Cambridge", "group" : 8 }, { "name" : "Canterbury", "group" : 9 }, { "name" : "Carlisle", "group" : 1 }, { "name" : "Chippenham", "group" : 3 }, { "name" : "Colchester", "group" : 10 }, { "name" : "Cricklade", "group" : 11 }, { "name" : "Dartmouth", "group" : 3 }, { "name" : "Derby", "group" : 1 }, { "name" : "Devizes", "group" : 3 }, { "name" : "Dorchester", "group" : 3 }, { "name" : "Dover", "group" : 12 }, { "name" : "Downton", "group" : 3 }, { "name" : "Dunwich", "group" : 10 }, { "name" : "East Grinstead", "group" : 13 }, { "name" : "Gloucester", "group" : 14 }, { "name" : "Great Bedwyn", "group" : 3 }, { "name" : "Great Torrington", "group" : 3 }, { "name" : "Great Yarmouth", "group" : 15 }, { "name" : "Grimsby", "group" : 6 }, { "name" : "Guildford", "group" : 16 }, { "name" : "Hastings", "group" : 17 }, { "name" : "Helston", "group" : 3 }, { "name" : "Hereford", "group" : 14 }, { "name" : "Horsham", "group" : 18 }, { "name" : "Huntingdon", "group" : 19 }, { "name" : "Hythe", "group" : 20 }, { "name" : "Ipswich", "group" : 10 }, { "name" : "King's Lynn", "group" : 21 }, { "name" : "Launceston", "group" : 3 }, { "name" : "Leicester", "group" : 1 }, { "name" : "Leominster", "group" : 22 }, { "name" : "Lewes", "group" : 23 }, { "name" : "Lincoln", "group" : 24 }, { "name" : "Liskeard", "group" : 3 }, { "name" : "London", "group" : 25 }, { "name" : "Lostwithiel", "group" : 3 }, { "name" : "Ludgershall", "group" : 3 }, { "name" : "Lyme Regis", "group" : 3 }, { "name" : "Maldon", "group" : 26 }, { "name" : "Malmesbury", "group" : 11 }, { "name" : "Marlborough", "group" : 3 }, { "name" : "Melcombe Regis", "group" : 3 }, { "name" : "Midhurst", "group" : 27 }, { "name" : "New Romney", "group" : 28 }, { "name" : "New Shoreham", "group" : 29 }, { "name" : "Newcastle-on-Tyne", "group" : 30 }, { "name" : "Newcastle-under-Lyme", "group" : 31 }, { "name" : "Northampton", "group" : 32 }, { "name" : "Norwich", "group" : 33 }, { "name" : "Nottingham", "group" : 1 }, { "name" : "Old Sarum", "group" : 3 }, { "name" : "Oxford", "group" : 14 }, { "name" : "Plympton Erle", "group" : 3 }, { "name" : "Portsmouth", "group" : 34 }, { "name" : "Reading", "group" : 3 }, { "name" : "Reigate", "group" : 35 }, { "name" : "Rochester", "group" : 9 }, { "name" : "Rye", "group" : 36 }, { "name" : "Salisbury", "group" : 3 }, { "name" : "Sandwich", "group" : 9 }, { "name" : "Scarborough", "group" : 19 }, { "name" : "Shaftesbury", "group" : 3 }, { "name" : "Shrewsbury", "group" : 7 }, { "name" : "Southampton", "group" : 3 }, { "name" : "Southwark", "group" : 37 }, { "name" : "Stafford", "group" : 31 }, { "name" : "Taunton", "group" : 3 }, { "name" : "Tavistock", "group" : 3 }, { "name" : "Tenterden", "group" : 28 }, { "name" : "Totnes", "group" : 3 }, { "name" : "Truro", "group" : 3 }, { "name" : "Wallingford", "group" : 11 }, { "name" : "Wareham", "group" : 3 }, { "name" : "Warwick", "group" : 38 }, { "name" : "Wells", "group" : 3 }, { "name" : "Weymouth", "group" : 3 }, { "name" : "Wilton", "group" : 3 }, { "name" : "Winchelesea (New)", "group" : 36 }, { "name" : "Winchester", "group" : 3 }, { "name" : "Worcester", "group" : 39 }, { "name" : "York", "group" : 30 } ] ; 
+ var width = 900
+height = 600;
+
+var color = d3.scale.category20();
+
+var force = d3.layout.force()
+.nodes(d3.values(nodes))
+.links(links)
+.size([width, height])
+.linkDistance(function(d){return d.value })
+.charge(-100)
+.on("tick", tick)
+.start();
+
+var svg = d3.select("body").append("svg")
+.attr("width", width)
+.attr("height", height);
+
+var link = svg.selectAll(".link")
+.data(force.links())
+.enter().append("line")
+.attr("class", "link")
+.style("stroke-width", 1);
+
+var node = svg.selectAll(".node")
+.data(force.nodes())
+.enter().append("g")
+.attr("class", "node")
+.style("fill", function(d) { return color(d.group); })
+.style("opacity", 0.6)
+.on("mouseover", mouseover)
+.on("mouseout", mouseout)
+.call(force.drag);
+
+node.append("circle")
+.attr("r", 6)
+
+node.append("svg:text")
+.attr("class", "nodetext")
+.attr("dx", 12)
+.attr("dy", ".35em")
+.text(function(d) { return d.name });
+
+function tick() {
+link
+.attr("x1", function(d) { return d.source.x; })
+.attr("y1", function(d) { return d.source.y; })
+.attr("x2", function(d) { return d.target.x; })
+.attr("y2", function(d) { return d.target.y; });
+
+node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+}
+
+function mouseover() {
+d3.select(this).select("circle").transition()
+.duration(750)
+.attr("r", 16);
+d3.select(this).select("text").transition()
+.duration(750)
+.attr("x", 13)
+.style("stroke-width", ".5px")
+.style("font", "37.5px serif")
+.style("opacity", 1);
+}
+
+function mouseout() {
+d3.select(this).select("circle").transition()
+.duration(750)
+.attr("r", 8);
+}
+
+</script>
+ </body>
